@@ -179,7 +179,7 @@ cv2.putText(copy,'GI',(int((det[0][21][0]+det[0][22][0])//2),int((det[0][21][1]+
 #
 # chin_ratio1([det[0][41][0],det[0][9][1]],[det[0][9][0],det[0][9][1]],[det[0][27][0],det[0][9][1]])
 # lip_ratio1([det[0][41][0],det[0][9][1]],[det[0][9][0],det[0][9][1]],[det[0][27][0],det[0][9][1]])
-# print(chin_ratio2)
+print(chin_ratio2)
 
 
 cv2.imshow('m',copy)
