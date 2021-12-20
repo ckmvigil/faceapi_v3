@@ -182,6 +182,6 @@ cv2.putText(copy,'GI',(int((det[0][21][0]+det[0][22][0])//2),int((det[0][21][1]+
 # print(chin_ratio2)
 
 
-#cv2.imshow('m',copy)
+cv2.imshow('m',copy)
 
 cv2.imwrite('result-10-fhl.jpg',copy)
