@@ -3,7 +3,7 @@ import cv2
 import math
 from math import atan,sqrt
 
-frame = cv2.imread('image-10.jpg')
+frame = cv2.imread('image-9.jpg')
 #frame = cv2.flip(frame,1)
 fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu', face_detector='sfd')
 det = fa.get_landmarks_from_image(frame)
@@ -83,22 +83,18 @@ def points(h):
     cv2.putText(copy, str(h), (int(det[0][h][0]), int(det[0][h][1])), font, fontScale,
                  color, thickness,None, False)
 
-def angle_lines(a,b,c,d,m):
-    if m == 0:
-        p1 = slope(det[0][a][0],det[0][a][1],det[0][b][0],det[0][b][1])
-        p2 = slope(det[0][c][0],det[0][c][1],det[0][d][0],det[0][d][1])
+def angle_lines(x1,y1,x2,y2,x3,y3,x4,y4):
+    p1 = slope(x1,y1,x2,y2)
+    p2 = slope(x3,y3,x4,y4)
 
-        if p1 and p2 != 'NA':
-            return shortest_angle(p1,p2)
-        elif p1 == 'NA':
-            return shortest_angle(p2,0)
-        elif p2 == 'NA':
-            return shortest_angle(p1,0)
+    if p1 and p2 != 'NA':
+        return find_angle(p1,p2)
+    elif p1 == 'NA':
+        return find_angle(p2,0)
+    elif p2 == 'NA':
+        return find_angle(p1,0)
 
-    else:
-        p1 = slope(det[0][a][0],det[0][a][1],(det[0][b][0]+det[0][m][0])//2,(det[0][b][1]+det[0][m][1])//2)
-        p2 = slope(det[0][c][0], det[0][c][1], det[0][d][0], det[0][d][1])
-        return shortest_angle(p1,p2)
+
 
 chin_ratio2 = []
 def chin_ratio1(a, b, c):
@@ -145,7 +141,7 @@ PlipBx,PlipBy = int(det[0][58][0]),int(det[0][58][1]) # Protrusive lower lip
 Pox,Poy = section(Po1x,Po2x,Po1y,Po2y,1,1)            # Ear point
 Orx,Ory = section(Or1x,Or2x,Or1y,Or2y,1,1)      # Eye point
 GIx,GIy = section(GI1x,GI2x,GI1y,GI2y,1,1)            #Centre point
-one3rdx,one3rdy = section(Porx,PlipBx,Pory,PlipBy,1,3) # point of 1-3rd of line connecting eye-point and bottom lip point
+one3rdx,one3rdy = section(Pox,PlipBx,Poy,PlipBy,1,3) # point of 1-3rd of line connecting eye-point and bottom lip point
 
 #N-SN line
 drawLine(copy,Nx,Ny,SNx,SNy,(128,0,0))
@@ -158,7 +154,7 @@ cv2.putText(copy,'Po',(Pox,Poy),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),3)
 cv2.putText(copy,'Or',(Orx,Ory),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),3)
 
 #S-line  Pg-SN
-drawLine(Pgx,Pgy,SNx,SNy,(0,0,128))
+drawLine(copy,Pgx,Pgy,SNx,SNy,(0,0,128))
 cv2.putText(copy,'Pg',(Pgx,Pgy),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),3)
 
 #E-line -  Prn-Pg
@@ -172,11 +168,11 @@ cv2.putText(copy,'GI',(GIx,GIy),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),3)
 #sub-luxation line (Po- one-third of (Por-bottomlip line))
 drawLine(copy,Pox,Poy,one3rdx,one3rdy,(139,69,19))
 
-print('The angle between N-Sn line and Frankfort horizontal line is',angle_lines(27,33,1,41,0),'degrees')
-print('The facial angle is ',acute_obtuse(angle_lines(21,33,33,9,22)),'degrees')
-print('The z-angle is ',angle_lines(9,58,1,41,0),'degrees')
-print('The Horizantal angle of atlas subluxation line is ',)
-print('E-line distances')
+print('The angle between N-Sn line and Frankfort horizontal line is',angle_lines(Nx,Ny,SNx,SNy,Pox,Poy,Orx,Ory),'degrees')
+print('The facial angle is ',acute_obtuse(angle_lines(Nx,Ny,SNx,SNy,SNx,SNy,Pgx,Pgy)),'degrees')
+print('The z-angle is ',acute_obtuse(angle_lines(Po1x,Po1y,Orx,Ory,Prnx,Prny,Pgx,Pgy)),'degrees')
+print('The Horizontal angle of atlas subluxation line is ',find_angle(slope(Po1x,Po1y,one3rdx,one3rdy),0))
+#print('E-line distances')
 
 chin_ratio1([det[0][41][0],det[0][9][1]],[det[0][9][0],det[0][9][1]],[det[0][27][0],det[0][9][1]])
 lip_ratio1([det[0][41][0],det[0][9][1]],[det[0][9][0],det[0][9][1]],[det[0][27][0],det[0][9][1]])
@@ -185,4 +181,4 @@ print(chin_ratio2)
 
 cv2.imshow('Final-Image',copy)
 
-cv2.imwrite('result-10-fhl.jpg',copy)
+#cv2.imwrite('result-10-fhl.jpg',copy)
