@@ -3,7 +3,7 @@ import cv2
 import math
 from math import atan,sqrt
 
-frame = cv2.imread('image-9.jpg')
+frame = cv2.imread('Test_images/image-1.jpeg')
 #frame = cv2.flip(frame,1)
 fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu', face_detector='sfd')
 det = fa.get_landmarks_from_image(frame)
@@ -168,10 +168,13 @@ cv2.putText(copy,'GI',(GIx,GIy),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,0,0),3)
 #sub-luxation line (Po- one-third of (Por-bottomlip line))
 drawLine(copy,Pox,Poy,one3rdx,one3rdy,(139,69,19))
 
-print('The angle between N-Sn line and Frankfort horizontal line is',angle_lines(Nx,Ny,SNx,SNy,Pox,Poy,Orx,Ory),'degrees')
+print('The angle between N-Sn line and Frankfort horizontal line is(Po=1)',angle_lines(Nx,Ny,SNx,SNy,Po1x,Po1y,Orx,Ory),'degrees')
+print('The angle between N-Sn line and Frankfort horizontal line is(Po=1+2/2)',angle_lines(Nx,Ny,SNx,SNy,Pox,Poy,Orx,Ory),'degrees')
 print('The facial angle is ',acute_obtuse(angle_lines(Nx,Ny,SNx,SNy,SNx,SNy,Pgx,Pgy)),'degrees')
-print('The z-angle is ',acute_obtuse(angle_lines(Po1x,Po1y,Orx,Ory,Prnx,Prny,Pgx,Pgy)),'degrees')
-print('The Horizontal angle of atlas subluxation line is ',find_angle(slope(Po1x,Po1y,one3rdx,one3rdy),0))
+print('The z-angle is(Po=1) ',acute_obtuse(angle_lines(Po1x,Po1y,Orx,Ory,Prnx,Prny,Pgx,Pgy)),'degrees')
+print('The z-angle is(Po=1+2/2) ',acute_obtuse(angle_lines(Pox,Poy,Orx,Ory,Prnx,Prny,Pgx,Pgy)),'degrees')
+print('The Horizontal angle of atlas subluxation line is(po=1)',find_angle(slope(Po1x,Po1y,one3rdx,one3rdy),0))
+print('The Horizontal angle of atlas subluxation line is(po=1+2/2)',find_angle(slope(Pox,Poy,one3rdx,one3rdy),0))
 #print('E-line distances')
 
 chin_ratio1([det[0][41][0],det[0][9][1]],[det[0][9][0],det[0][9][1]],[det[0][27][0],det[0][9][1]])
